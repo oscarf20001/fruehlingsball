@@ -1,0 +1,22 @@
+#disclaimer{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(8, 27, 75, 0.1);
+    -webkit-backdrop-filter: blur(8px); /* Safari und ältere Webkit-Browser */
+    backdrop-filter: blur(8px); /* Moderne Browser */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#disclaimer h1{
+    margin: 0 0 20px 0;
+}
+
+#disclaimer input{
+    margin: 50px 0 0 0;
+}

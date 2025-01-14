@@ -1,0 +1,208 @@
+html body header#head{
+    padding: 20px 0px 50px 0px;
+}
+
+body form{
+    max-width: calc(100vw - 40px);
+    overflow: hidden;
+}
+
+body form .aboutYou .aboutYouInputs{
+    display: grid;
+    grid-template-areas: 
+    "name name vorname vorname"
+    "email email telnummer telnummer"
+    "age klasse ticket ticket";
+    /* Vier Spalten mit je 25vw */
+    grid-template-columns: calc((100vw - 45px) / 4) calc((100vw - 45px) / 4) calc((100vw - 45px) / 4) calc((100vw - 45px) / 4);
+    gap: 15px; /* Abstand zwischen den Grid-Items */
+    width: 100vw;
+    margin: 25px 0 0 0;
+}
+
+body form .aboutYou .aboutYouInputs .input-field{
+    width: 100%;
+}
+
+body form .aboutYou .aboutYouInputs .name{
+    grid-area: name;
+}
+
+body form .aboutYou .aboutYouInputs .vorname{
+    grid-area: vorname;
+}
+
+body form .aboutYou .aboutYouInputs .email{
+    grid-area: email;
+}
+
+body form .aboutYou .aboutYouInputs .age{
+    grid-area: age;
+}
+
+body form .aboutYou .aboutYouInputs .telNumber{
+    grid-area: telnummer;
+}
+
+body form .aboutYou .aboutYouInputs .klasse{
+    grid-area: klasse;
+}
+
+body form .aboutYou .aboutYouInputs .cntTickets{
+    grid-area: ticket;
+}
+
+body form .aboutYou{
+    margin: 0 0 50px 0;
+}
+
+body form #ticketsContainer{
+    margin: 25px 0 0 0;
+}
+
+body form #ticketsContainer .ticket{
+    display: grid;
+    grid-template-areas:
+    "headline headline headline headline"
+    "name name vorname vorname"
+    "email email age age";
+    grid-template-columns: calc((100vw - 45px) / 4) calc((100vw - 45px) / 4) calc((100vw - 45px) / 4) calc((100vw - 45px) / 4);
+    gap: 15px; /* Abstand zwischen den Grid-Items */
+    width: 100vw;
+}
+
+body form #ticketsContainer .ticket h3{
+    grid-area: headline;
+}
+
+body form #ticketsContainer .ticket .ticketName{
+    grid-area: name;
+}
+
+body form #ticketsContainer .ticket .ticketVorName{
+    grid-area: vorname;
+}
+
+body form #ticketsContainer .ticket .ticketEmail{
+    grid-area: email;
+}
+
+body form #ticketsContainer .ticket .ticketAge{
+    grid-area: age;
+}
+
+html body form #checkData{
+    margin: 0 0 50px 0;
+}
+
+.check{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-height: 100vh;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1; /* Über Form legen */
+    scale: 0.9;
+    margin: 0 0 0 10px;
+}
+
+.upperCheck{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1;
+    background-color: rgba(8, 27, 75, 0.1);
+    -webkit-backdrop-filter: blur(8px); /* Safari und ältere Webkit-Browser */
+    backdrop-filter: blur(8px); /* Moderne Browser */
+    display: flex;
+    justify-content: flex-start;
+    align-items: start;
+    margin: 0;
+}
+
+.check h1{
+    margin: 0 0 25px 0;
+    position: relative;
+}
+
+.check h1::after{
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: white;
+}
+
+.check .checkKäufer, .checkTicket01, .checkTicket02, .moneyBox{
+    width: 50%;
+    display: flex;
+    margin: 0 0 25px 0;
+}
+
+.check .left{
+    width: 150px;
+    margin: 0 50px 0 0;
+}
+
+.check .middle{
+    width: 300px;
+}
+
+.check .moneyBox .middle #moneyBoxSum{
+    border-top: 1px solid white;
+    padding: 5px 0 0 0;
+}
+
+.check .buttons{
+    margin: 20px 0 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 50px;
+}
+
+.check .moneyBox{
+    margin: 0 0 20px 0;
+}
+
+.alerts{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(8, 27, 75, 0.1);
+    -webkit-backdrop-filter: blur(8px); /* Safari und ältere Webkit-Browser */
+    backdrop-filter: blur(8px); /* Moderne Browser */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1; /* Über Form legen */
+}
+
+.alerts .contentAlerts{
+    background-color: red;
+    padding: 20px;
+    border: 1px solid white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.alerts .contentAlerts input{
+    margin: 35px 0 0 0;
+}

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticketreservierung Winterball 2024 MCG</title>
+    <link rel="stylesheet" href="../styles/default.css">
+    <link rel="stylesheet" href="../styles/banner.css">
+    <link rel="stylesheet" href="../styles/ticket.css">
+</head>
+<body>
+    <!-- HEADLINE -->
+    <header id="head">
+        <h2>Reservierung für den Frühlingsball des MCG 2024</h2>
+    </header>
+
+    <!-- FORMULAR CONTENT -->
+    <form action="makeReservation.php" method="POST" id="main" class="main">
+
+        <!-- ÜBER DIE PERSON, DIE DIE TICKETS KAUFT -->
+        <div class="aboutYou">
+
+            <!-- INFO HEADLINE ABOUT U -->
+            <h3>Zuerst etwas über <span style="color: #52c393">dich!</span></h3>
+
+            <div class="aboutYouInputs">
+                <!-- ABOUT YOU FORM -->
+                <div class="input-field name">
+                    <input type="text" id="name" name="nachname" required>
+                    <label for="nachname">Dein Nachname:<sup>*</sup></label>
+                </div>
+                <div class="input-field vorname">
+                    <input type="text" id="vorname" name="vorname" required>
+                    <label for="vorname">Dein Vorname:<sup>*</sup></label>
+                </div>
+                <div class="input-field email">
+                    <input type="email" id="email" name="email" required>
+                    <label for="email">Deine Email-Adresse:<sup>*</sup></label>
+                </div>
+                <div class="input-field telNumber">
+                    <input type="tel" id="telNumber" name="telNumber" required>
+                    <label for="telNumber">Deine Telefonnummer:<sup>*</sup></label>
+                </div>
+                <div class="input-field age">
+                    <input type="number" id="age" name="age" required>
+                    <label for="age">Dein Alter:<sup>* Zum Zeitpunkt des Balls</sup></label>
+                </div>
+                <div class="input-field klasse">
+                    <input type="text" id="klasse" name="klasse">
+                    <label for="klasse">Deine Klasse:<sup>*</sup> (Format: Klassenstufe/Zug)</label>
+                </div>
+                <div class="input-field cntTickets">
+                    <select name="cntTickets" id="cntTickets" required>
+                        <option value="1" default>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select> 
+                    <label for="cntTickets">Anzahl an Tickets:<sup>*</sup></label>
+                </div>
+            </div>
+            <p>Aktuelle Anzahl der Tickets: <span id="ticketCountDisplay">1</span></p>
+        </div>
+
+        <!-- INFO HEADLINE ABOUT U -->
+        <h3>Für wen willst du <span style="color: #52c393">Tickets</span> kaufen?</h3>
+
+        <!-- FORM TICKETS -->
+        <div id="ticketsContainer">
+            <div class="ticket">
+                <h3 id="headlineTicket01">Ticket Nr. <span>1</span></h3>
+
+                <div class="input-field ticketName">
+                    <input type="text" name="ticketName" required>
+                    <label for="ticketName">Nachame:<sup>*</sup></label>
+                </div>
+                <div class="input-field ticketVorName">
+                    <input type="text" id="" name="ticketVorName" required>
+                    <label for="ticketVorName">Vorname:<sup>*</sup></label>
+                </div>
+                <div class="input-field ticketEmail">
+                    <input type="email" id="" name="ticketEmail" required>
+                    <label for="ticketEmail">Email:<sup>*</sup></label>
+                </div>
+                <div class="input-field ticketAge">
+                    <input type="text" id="" name="ticketAge" required>
+                    <label for="ticketAge">Alter:<sup>* Zum Zeitpunkt des Balls</sup></label>
+                </div>
+            </div>
+        </div>
+
+        <input type="button" value="Daten überprüfen!" id="checkData">
+        
+    </form>
+    <div class="upperCheck" id="check" style="display:none;">
+        <div class="check">
+            <h1 id="HeadlineCheck">Bitte überprüfen Sie ihre eingegebenen Daten:</h1>
+            <div class="checkKäufer">
+                <div class="left">
+                    <h2>Käufer:</h2>
+                </div>
+                <div class="middle">
+                    <p>Nachname:</p>
+                    <p>Vorname:</p>
+                    <p>Email:</p>
+                    <p>Telefonnummer:</p>
+                    <p>Alter:</p>
+                    <p id="checkKäuferClaas">Klasse (wenn Schüler des MCG):</p>
+                    <p>Anzahl Tickets:</p>
+                </div>
+                <div class="right">
+                    <p id="lastname0"></p>
+                    <p id="prename0"></p>
+                    <p id="mail0"></p>
+                    <p id="telNr0"></p>
+                    <p id="age0"></p>
+                    <p id="claas0"></p>
+                    <p id="count0"></p>
+                </div>
+            </div>
+            <div class="checkTicket01">
+                <div class="left">
+                    <h2>Ticket 1:</h2>
+                </div>
+                <div class="middle">
+                    <p>Nachname:</p>
+                    <p>Vorname:</p>
+                    <p>Email:</p>
+                    <p>Alter:</p>
+                </div>
+                <div class="right">
+                    <p id="lastnameCheck01"></p>
+                    <p id="prenameCheck01"></p>
+                    <p id="mailCheck01"></p>
+                    <p id="ageCheck01"></p>
+                </div>
+            </div>
+            <div class="checkTicket02" id="checkTicket02" style="display:none;">
+                <div class="left">
+                    <h2>Ticket 2:</h2>
+                </div>
+                <div class="middle">
+                    <p>Nachname:</p>
+                    <p>Vorname:</p>
+                    <p>Email:</p>
+                    <p>Alter:</p>
+                </div>
+                <div class="right">
+                    <p id="lastnameCheck02"></p>
+                    <p id="prenameCheck02"></p>
+                    <p id="mailCheck02"></p>
+                    <p id="ageCheck02"></p>
+                </div>
+            </div>
+            <div class="moneyBox">
+                <div class="left">
+                    <h2>Gesamtsumme</h2>
+                </div>
+                <div class="middle">
+                    <p id="moneyTicket01" name="moneyTicket1">Ticket 1:</p>
+                    <p id="moneyTicket02" name="moneyTicket2">Ticket 2:</p>
+                    <p id="moneyBoxSum">Summe:</p>
+                </div>
+                <div class="right"></div>
+            </div>
+            <div class="buttons">
+                <input type="button" id="manipulateData" value="Daten korrigieren!">
+                <input type="submit" id="sendData" value="Daten absenden!" form="main">
+            </div>
+        </div>
+    </div>
+
+    <div id="disclaimer">
+        <h1>Wichtige Info:</h1>
+        <div class="notePoints">
+            <p>- Der Käufer steht für seine gekauften Tickets in der Veranwortung</p>
+            <p>- Keine Anmeldung unter 16 Jahren</p>
+            <p>- Zahlung in Bar an Raphael Stark oder Oscar Streich persönlich</p>
+            <br>
+            <p>- Durch klicken auf "OK" erklären Sie sich einverstanden mit oben genannten Punkten</p>
+        </div>
+        <input type="button" value="OK" onclick="document.getElementById('disclaimer').style.display = 'none';">
+    </div>
+
+    <div id="responseMessage"></div>
+
+    <script src="../javascript/generelTicket.js"></script>
+    <script src="../javascript/checkTicket.js"></script>
+    <script src="../javascript/generateTickets.js"></script>
+    <script src="../javascript/getTicketPrice.js"></script>
+    <script src="../javascript/closeTicketing.js"></script>
+    <script src="../javascript/makeReservation.js"></script>
+</body>
+</html>

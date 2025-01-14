@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteBase /
+
+# Wenn jemand zu 'ticket/' geht, leite ihn auf 'ticket.html' weiter
+RewriteRule ^ticket/$ /ticket.html [L]
+
+DirectoryIndex ticket.html ticket/index.html
