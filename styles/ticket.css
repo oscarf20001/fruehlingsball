@@ -206,3 +206,14 @@ html body form #checkData{
 .alerts .contentAlerts input{
     margin: 35px 0 0 0;
 }
+
+.sub-form{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
+
+.sub-form input{
+    cursor:not-allowed;
+}

@@ -71,3 +71,109 @@ document.getElementById("checkData").addEventListener('click', async function() 
     document.getElementById("manipulateData").style.display = "flex";
     document.getElementById("sendData").style.display = "flex";
 });
+
+makeKaeufer_ticket_ids = ['name','vorname','email','age'];
+ticketFields = ['name01','prename01','mail01','age01'];
+disableCheckbox();
+
+function checkAllFieldsFilled(){
+    return makeKaeufer_ticket_ids.every(id => {
+        const element = document.getElementById(id);
+        return element && element.value.trim() !== ''; // Überprüft, ob das Feld nicht leer ist
+    });
+}
+
+
+function makeInputVisible(action){
+    if(!action){
+        disableCheckbox();
+        return;
+    }
+    armCheckbox();
+}
+
+function setFields(){
+    makeKaeufer_ticket_ids.forEach((id, index) => {
+        const element = document.getElementById(id);
+        const ticketField = document.getElementById(ticketFields[index]);
+        if (element && (element.value !== '' && element.value !== null && element.value !== undefined)) {            
+            ticketField.value = element.value;
+        } else {
+            console.warn(`Element mit ID "${id}" ist leer oder nicht vorhanden.`);
+        }
+    });
+
+    ticketFields.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('input', () => {
+                disarmCheckbox();
+            });
+        } else {
+            console.log("Oh nein, Element mit ID " + id + " wurde nicht gefunden.");
+        }
+    });
+}
+
+function checkOnOnload(){
+    makeKaeufer_ticket_ids.forEach(id => {
+        // Eingaben in die ausgewählten Input-Felder
+        const element = document.getElementById(id);
+        if (element) {
+            if (checkAllFieldsFilled()) {
+                makeInputVisible(true);
+            }else{
+                makeInputVisible(false);
+            }
+        } else {
+            console.warn(`Element mit ID "${id}" nicht gefunden.`);
+        }
+    });
+}
+
+function disableCheckbox(){
+    let input = document.getElementById('kaeufer_ticket');
+        input.setAttribute('disabled','');
+        input.style.cursor = 'not-allowed';
+        input.checked = false;
+}
+
+function disarmCheckbox(){
+    let input = document.getElementById('kaeufer_ticket');
+    input.checked = false;
+    makeTippy();
+}
+
+function armCheckbox(){
+    let input = document.getElementById('kaeufer_ticket');
+    input.removeAttribute('disabled');
+    input.style.cursor = 'pointer';
+}
+
+document.getElementById('kaeufer_ticket').addEventListener('click', function(){
+    // Checkbox got clicked
+    setFields();
+});
+
+makeKaeufer_ticket_ids.forEach(id => {
+    // Eingaben in die ausgewählten Input-Felder
+    const element = document.getElementById(id);
+    if (element) {
+        element.addEventListener('input', () => { // "input" wird ausgelöst, wenn sich der Wert ändert
+            if (checkAllFieldsFilled()) {
+                makeInputVisible(true);
+            }else{
+                makeInputVisible(false);
+            }
+        });
+    } else {
+        console.warn(`Element mit ID "${id}" nicht gefunden.`);
+    }
+});
+
+// Ticket CNT Event Listener
+document.getElementById('cntTickets').addEventListener('change', () => {
+    disarmCheckbox();
+});
+
+checkOnOnload();

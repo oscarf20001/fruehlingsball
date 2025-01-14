@@ -53,12 +53,17 @@
                     <select name="cntTickets" id="cntTickets" required>
                         <option value="1" default>1</option>
                         <option value="2">2</option>
-                        <option value="3">3</option>
                     </select> 
                     <label for="cntTickets">Anzahl an Tickets:<sup>*</sup></label>
                 </div>
             </div>
-            <p>Aktuelle Anzahl der Tickets: <span id="ticketCountDisplay">1</span></p>
+            <div class="sub-form">
+                <p>Aktuelle Anzahl der Tickets: <span id="ticketCountDisplay">1</span></p>
+                <div class="makeKaeufer_ticket">
+                    <input type="checkbox" name="kaeufer_ticket" id="kaeufer_ticket" value="Test" disabled>
+                    <label for="kaeufer_ticket" id="labelMakeKaeuferTicket">Daten des Käufers für das erste Ticket übernehmen<sup>*</sup></label>
+                </div>
+            </div>
         </div>
 
         <!-- INFO HEADLINE ABOUT U -->
@@ -70,19 +75,19 @@
                 <h3 id="headlineTicket01">Ticket Nr. <span>1</span></h3>
 
                 <div class="input-field ticketName">
-                    <input type="text" name="ticketName" required>
+                    <input type="text"  id="name01" name="ticketName" required>
                     <label for="ticketName">Nachame:<sup>*</sup></label>
                 </div>
                 <div class="input-field ticketVorName">
-                    <input type="text" id="" name="ticketVorName" required>
+                    <input type="text" id="prename01" name="ticketVorName" required>
                     <label for="ticketVorName">Vorname:<sup>*</sup></label>
                 </div>
                 <div class="input-field ticketEmail">
-                    <input type="email" id="" name="ticketEmail" required>
+                    <input type="email" id="mail01" name="ticketEmail" required>
                     <label for="ticketEmail">Email:<sup>*</sup></label>
                 </div>
                 <div class="input-field ticketAge">
-                    <input type="text" id="" name="ticketAge" required>
+                    <input type="text" id="age01" name="ticketAge" required>
                     <label for="ticketAge">Alter:<sup>* Zum Zeitpunkt des Balls</sup></label>
                 </div>
             </div>
@@ -189,5 +194,49 @@
     <script src="../javascript/getTicketPrice.js"></script>
     <script src="../javascript/closeTicketing.js"></script>
     <script src="../javascript/makeReservation.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>
+        const checkbox = document.getElementById('kaeufer_ticket');
+        let tooltipInstance;
+
+        if (checkbox) {
+            // MutationObserver erstellen
+            const observer = new MutationObserver(() => {
+                if (checkbox.disabled) {
+                    tooltipInstance = tippy('#labelMakeKaeuferTicket', {
+                        content: 'Fülle zuerst die Felder "Vorname", "Nachname", "Email" und "Alter" des Käufers aus',
+                    });
+
+                    return;
+                }
+
+                if (tooltipInstance) {
+                    tooltipInstance.forEach(instance => instance.destroy());
+                    tooltipInstance = null;
+                }
+            });
+
+            // Observer auf die Checkbox anwenden, nur das `disabled`-Attribut beobachten
+            observer.observe(checkbox, { attributes: true, attributeFilter: ['disabled'] });
+        }
+
+        function makeTippy(){
+            if(checkbox.disabled){
+                tooltipInstance = tippy('#labelMakeKaeuferTicket', {
+                    content: 'Fülle zuerst die Felder "Vorname", "Nachname", "Email" und "Alter" des Käufers aus',
+                });
+
+                return;
+            }
+            // Tooltip löschen
+            if (tooltipInstance) {
+                tooltipInstance.forEach(instance => instance.destroy());
+                tooltipInstance = null;
+            }
+        }
+
+        makeTippy();
+    </script>
 </body>
 </html>
