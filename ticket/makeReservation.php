@@ -39,20 +39,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $ids = ['nachname','vorname','email','telNumber','age','klasse','cntTickets'];
 
     // Zugriff auf Formulardaten
-    $kaeufer_nachname = $_POST['nachname'] ?? '';
-    $kaeufer_vorname = $_POST['vorname'] ?? '';
-    $kaeufer_email = $_POST['email'] ?? '';
-    $kaeufer_telNumber = $_POST['telNumber'] ?? '';
-    $kaeufer_age = $_POST['age'] ?? '';
-    $kaeufer_klasse = $_POST['klasse'] ?? '13/0';
-    $kaeufer_cntTickets = $_POST['cntTickets'] ?? 0;
+    $kaeufer_nachname = trim($_POST['nachname'] ?? '');
+    $kaeufer_vorname = trim($_POST['vorname'] ?? '');
+    $kaeufer_email = trim($_POST['email'] ?? '');
+    $kaeufer_telNumber = trim($_POST['telNumber'] ?? '');
+    $kaeufer_age = trim($_POST['age'] ?? '');
+    $kaeufer_klasse = trim($_POST['klasse'] ?? '13/0');
+    $kaeufer_cntTickets = trim($_POST['cntTickets'] ?? 0);
 
     // Tickets verarbeiten
     for ($i = 1; $i <= $kaeufer_cntTickets; $i++) {
-        $ticketName = $_POST["ticketName$i"] ?? '';
-        $ticketVorName = $_POST["ticketVorName$i"] ?? '';
-        $ticketEmail = $_POST["ticketEmail$i"] ?? '';
-        $ticketAge = $_POST["ticketAge$i"] ?? '';
+        $ticketName = trim($_POST["ticketName$i"] ?? '');
+        $ticketVorName = trim($_POST["ticketVorName$i"] ?? '');
+        $ticketEmail = trim($_POST["ticketEmail$i"] ?? '');
+        $ticketAge = trim($_POST["ticketAge$i"] ?? '');
 
         // Hier kannst du die Ticketdaten speichern oder weiterverarbeiten
     }

@@ -1,15 +1,45 @@
 <?php
-
+#require '../../affiliations/php/db_connection.php';
+require '../../affiliations/php/db_connection_winterball.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+# Select every Email, that does not contain numbers in their class fields. Specified by the field containing an dash (-).
+# Write those mails into an array
+# Send a mail to every mail in this array
+# Log every sending process into a log file
 
-function mailing($conn, $k_data, $t_data){
+$mails = [];
+$i = 0;
+
+$selectMail = "SELECT * FROM käufer WHERE (klasse LIKE '%-%' OR klasse LIKE '%13/0%') AND id != 246 AND id != 247;";
+$stmt = $conn->prepare($selectMail);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $currentMail = htmlspecialchars($row['email'], ENT_QUOTES, 'UTF-8');
+    $currentPreName = htmlspecialchars($row['vorname'], ENT_QUOTES, 'UTF-8');
+    $currentName = htmlspecialchars($row['nachname'], ENT_QUOTES, 'UTF-8');
+    $mails[] = [
+        'id' => $i,
+        'mail' => $currentMail,
+        'vorname' => $currentPreName,
+        'nachname' => $currentName
+    ];
+    #$mails = [[1,'streiosc@curiegym.de', 'Oscar', 'Streich'],[2,'starkrap@curiegym.de','Raphael','Stark']];
+    #mailing($conn, $mails, $i);
+    $i++;
+}
+
+print_r($mails);
+
+
+function mailing($conn, $k_data, $i){
     // REQUIREMENTS AND INCLUDES FOR DATABASE CONNECTION
     require 'db_connection.php';
     require_once __DIR__ . '/vendor/autoload.php'; // Autoloader einbinden
 
     // Daten für Mail: 
-    $sum = getSum($conn, $k_data[2]);
+    #$sum = getSum($conn, $k_data[2]);
     $iban = 'DE61 1605 0000 1102 4637 24';
 
     #print_r($k_data);
@@ -46,73 +76,19 @@ function mailing($conn, $k_data, $t_data){
                         </style>
                     </head>
                     <body>
-                        <p>Hey " . htmlspecialchars($k_data[1], ENT_QUOTES, 'UTF-8') . ",</p>
-                        <p>
-                            Du hast es geschafft und dir deine grandiosen Tickets für den Frühlingsball 2025 gesichert – vielen Dank dafür!<br><br>
+                        <h3>Hey " . htmlspecialchars($k_data[$i]['vorname'], ENT_QUOTES, 'UTF-8') . ",</h3>
+                        <p>Am 11.04.2025 findet im Kuluthaus Lehnitz der Frühlingsball organisiert vom 12er Jahrgang des Marie Curie Gymnasiums statt. Erleben sie einen crazytastischen Abend und unterstützen Sie gleicheztiig die Abikasse!!!<br></p>
 
-                            Hier sind alle wichtigen Infos:<br><br>
+                        <p>Wir laden Sie hiermit herzlich ein sich unter folgenden Link ein Ticket zu reservieren:
+                        <a href='https://www.curiegymnasium.de'>www.curiegymnasium.de</a><br></p>
 
-                            Datum: 11.04.2025<br>
-                            Uhrzeit: Einlass ab 18:45 Uhr, Beginn um 20:00 Uhr, Ende: 01:00 Uhr<br>
-                            Adresse: Friedrich-Wolf-Straße 31, Oranienburg<br><br>
+                        <p><strong>Wichtige Daten:</strong><br>
+                        Datum: 11.04.2024<br>
+                        Uhrzeit: Einlass ab 18:45, Beginn: 20:00<br>
+                        Preis: 12€ (Schüler, ehemalig. Schüler, Lehrer), 15€ (Externe)</p>
 
-                            Die Tickets könnt ihr wie gewohnt phänomenal vor der Bibliothek oder per Überweisung bezahlen.
-                            Überweisungen sind ab sofort möglich (Bankverbindung unten), und ab wann ihr die Tickets bar bezahlen könnt, geben wir euch noch rechtzeitig bekannt.<br><br>
-                            
-                            <strong>Wichtig:</strong> Eure Reservierungen sind nicht unbegrenzt gültig! Unbezahlte Tickets werden am 30.03.2025 um 23:29 automatisch storniert, damit andere eine fancytastische Chance auf Resttickets haben.<br>
-                        </p>
-                        <p>Hier nochmal eine kleine Übersicht deiner Reservierung:</p>
-                        <table>
-                            <thead style='border-left:2px solid black;'>
-                                <tr>
-                                    <th>Deine, noch zu begleichende, Summe:</th>
-                                    <th>" . number_format($sum, 2, ',', '.') . "€</th>
-                                </tr>
-                            </thead>
-                        </table>
-                        <p>Bezüglich der Tickets:</p>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Vorname</th>
-                                    <th>Nachname</th>
-                                    <th>Summe</th>
-                                </tr>
-                            </thead>
-                            <tbody>";
+                        <p>Die Reservierungen sind bis zum 30.03.2025, 23:59 Uhr gültig und werden danach ungültig.</p>
 
-                            //Tickets for this Käufer
-                            $id = getID($conn, $k_data[2]);
-                            $KäuferAllTickets = "SELECT email,vorname,nachname,sum FROM tickets WHERE käufer_ID = $id";
-                            $stmt = $conn->prepare($KäuferAllTickets);
-                            $stmt->execute();
-                            $result = $stmt->get_result();
-
-                            // Füge Zeilen für jedes Ticket hinzu
-                            while ($row = $result->fetch_assoc()) {
-                                $vorname = htmlspecialchars($row['vorname'], ENT_QUOTES, 'UTF-8');
-                                $nachname = htmlspecialchars($row['nachname'], ENT_QUOTES, 'UTF-8');
-                                $sum = number_format((float)$row['sum'], 2, ',', '.');
-                    
-                                $nachricht .= "
-                                <tr>
-                                    <td>$vorname</td>
-                                    <td>$nachname</td>
-                                    <td>" . $sum . "€</td>
-                                </tr>";
-                            }
-                    
-                            $nachricht .= "
-                            </tbody>
-                        </table>
-                        <p>
-                            <strong>Wenn du überweisen möchtest:</strong> Überweise dazu die oben genannte Summe an dieses Konto:
-                        </p>
-                        <p>
-                            <strong>IBAN:</strong> ".$iban."<br>
-                            <strong>Name:</strong> Raphael Stark<br>
-                            <strong>Verwendungszweck:</strong> \"". str_replace("@", "at", $k_data[2])." Frühlingsball\"
-                        </p>
                         <p>Wir freuen uns riesig auf einen crazytastischen Abend mit euch! 💕</p>
                         <p>Beste Grüße,<br>Gordon</p>
                     </body>
@@ -132,15 +108,15 @@ function mailing($conn, $k_data, $t_data){
         // Empfänger
         $mail->setFrom($mailUsername, 'Marie-Curie Gymnasium');
         $mail->addReplyTo('streiosc@curiegym.de', 'Oscar');
-        $mail->addAddress($k_data[2], $k_data[1]);
+        $mail->addAddress($k_data[$i]['mail'], $k_data[$i]['vorname']);
 
         // Nachricht
         $mail->isHTML(true);
-        $mail->Subject = 'Fancytastische Buchungsbestätigung: Frühlingsball 2025';
+        $mail->Subject = '!ACHTUNG! tolle Nachricht: DER FRÜHLINGSBALL 2025';
         $mail->Body    = $nachricht;
 
         $mail->send();
-        log_data_mail($conn, $k_data);
+        #log_data_mail($conn, $k_data);
         #sendJsonResponse(['message' => 'E-Mail erfolgreich gesendet', 'sum' => number_format($sum, 2)]);
     } catch (Exception $e) {
         #logError("PHPMailer Fehler: " . $mail->ErrorInfo);
@@ -194,7 +170,7 @@ function log_data_mail($conn, $k_data){
     $time = date('Y:m:d / H:i:s') . ':' . $milliseconds;
 
     if ($file) {
-        fwrite($file, $time . ': ✅ Mail should be sent to: ' . $k_data[2] . PHP_EOL); // Mail schreiben     
+        fwrite($file, $time . ': ✅ Mail should be sent to: ' . $k_data[1] . PHP_EOL); // Mail schreiben     
         fwrite($file, 'But check the internal webmail for possible errors!' . PHP_EOL); // Mail schreiben     
         fwrite($file, '---------------------------------------------------' . PHP_EOL); // Mail schreiben     
         #echo "Inhalt wurde erfolgreich in die Datei '$filename' geschrieben.";
@@ -203,3 +179,5 @@ function log_data_mail($conn, $k_data){
         #echo "Fehler beim Öffnen der Datei '$filename'.";
     }
 }
+
+?>

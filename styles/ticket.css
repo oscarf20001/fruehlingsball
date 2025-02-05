@@ -333,3 +333,22 @@ html body form #checkData{
         font-size: 16px;
     }
 }
+
+#responseContainer{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(8, 27, 75, 0.1);
+    -webkit-backdrop-filter: blur(8px); /* Safari und ältere Webkit-Browser */
+    backdrop-filter: blur(8px); /* Moderne Browser */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#responseContainer p{
+    margin: 0 0 50px 0;
+}

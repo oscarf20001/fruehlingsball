@@ -20,6 +20,7 @@ myconfig.yml
 
 data/*
 data/
+backups/
 qrcode/codes/
 qrcodes/
 
