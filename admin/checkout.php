@@ -5,7 +5,7 @@ include '../affiliations/php/db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $paid = $_POST['paid'] ?? 0;
-    $methodStr = $_POST['method'];
+    $methodStr = $_POST['method'] ?? 'ohne Angabe';
     $email = $_POST['email'];
 
     // Get buyer ID

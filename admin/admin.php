@@ -272,11 +272,18 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             const email = document.getElementById('k-mail').textContent;
             const method = document.getElementById('options').value;
             const name = document.getElementById('k-prename').textContent;
+            const userCookie = getCookie('User');
+
+            if(userCookie){
+                console.log("Benutzername aus Cookie: " + userCookie);
+            }else{
+                console.log("Cookie 'User' nicht gefunden!");
+            }
 
             fetch('checkout.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `paid=${encodeURIComponent(paidValue)}&email=${encodeURIComponent(email)}&method=${encodeURIComponent(method)}`
+                body: `paid=${encodeURIComponent(paidValue)}&email=${encodeURIComponent(email)}&method=${encodeURIComponent(method)}&user=${encodeURIComponent(userCookie)}`
             })
             .then(response => response.json())
             .then(data => {
@@ -323,4 +330,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 alert('Fehler bei der Kommunikation mit dem Server.');
             });
         });
+
+        function getCookie(name){
+            let value = "; " + document.cookie;
+            let parts = value.split("; " +  name + "=")
+            if(parts.length === 2){
+                return parts.pop().split(";").shift()
+            }
+            return null;
+        }
     </script>

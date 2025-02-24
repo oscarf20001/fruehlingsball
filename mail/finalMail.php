@@ -68,7 +68,7 @@ function email($conn, $email_receipent, $mailHost, $mailPassword, $mailPort, $ma
                 ". htmlspecialchars(sum($conn, $email_receipent)) . "€<br><br>
                 wurden voll und ganz beglichen. Wie episch!<br>
                 Wir werden dir zu einem späteren Zeitpunkt nochmal eine Mail mit deinem finalen Ticket und wichtigen Informationen schicken.<br>
-                Wir haben Bock ud freuen uns zusammen mit dir auf den [Datum]<br><br>
+                Wir haben Bock und freuen uns zusammen mit dir auf den [Datum]<br><br>
                 Mit freundlichen Grüßen,<br>Gordon!</p>
             </body>
             </html>

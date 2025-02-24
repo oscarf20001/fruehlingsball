@@ -38,8 +38,13 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     // Erfolgreiche Anmeldung
+    session_set_cookie_params(1800);  // 30 Minuten (1800 Sekunden)
+    ini_set('session.gc_maxlifetime', 1800); // Setze die maximale Lebensdauer der Session auf 30 Minuten
     session_start();
     $_SESSION['loggedin'] = true;
+    // Setze den Cookie "User" mit dem Benutzernamen und einer Laufzeit von 30 Minuten
+    $cookieExpirationTime = time() + 1800; // 30 Minuten = 1800 Sekunden
+    setcookie("User", $postUsername, $cookieExpirationTime, "/");  // "/" bedeutet, dass der Cookie für die gesamte Website gültig ist
     echo json_encode(["success" => true]);
 } else {
     // Ungültige Anmeldedaten
