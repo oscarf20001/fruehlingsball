@@ -30,6 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->close();
 
+    $sqlOpen = "UPDATE käufer SET `open` = `open` - `paid`";
+    $stmt = $conn->prepare($sqlOpen);
+    $stmt->execute();
+    $stmt->close();
+
     $sqlDif = "SELECT `open` FROM `käufer` WHERE ID = ?";
     $stmt = $conn->prepare($sqlDif);
     $stmt->bind_param('i', $k_id);
@@ -45,12 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->close();
 
-    $sqlOpen = "UPDATE käufer SET `open` = `open` - `paid`";
-    $stmt = $conn->prepare($sqlOpen);
-    $stmt->execute();
-    $stmt->close();
-
-    $sqlFinal = "SELECT `paid`, `open`, `status`, `method` FROM `käufer` WHERE ID = ?";
+    $sqlFinal = "SELECT `paid`, `open`, `status`, `method`, `authenticated_by` FROM `käufer` WHERE ID = ?";
     $stmt = $conn->prepare($sqlFinal);
     $stmt->bind_param('i', $k_id);
     $stmt->execute();
@@ -63,7 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'paid' => number_format($finalData['paid'], 2),
         'open' => number_format($finalData['open'], 2),
         'status' => $finalData['status'],
-        'method' => $finalData['method']
+        'method' => $finalData['method'],
+        'authenticator' => $finalData['authenticated_by']
     ]);
 } else {
     http_response_code(405);
