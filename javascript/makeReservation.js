@@ -62,7 +62,7 @@ function showMessage(msg, returnWert = null){
             break;
 
         case 'duplicate':
-            txt = '❌ Anfrage verweigert! Duplicate Entry ' + support;
+            txt = '❌ Anfrage verweigert! Duplicate Entry - ' + support;
             break;
 
         case 'unexpected':
