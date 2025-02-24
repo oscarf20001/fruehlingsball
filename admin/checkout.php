@@ -45,9 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->close();
 
-    $sqlOpen = "UPDATE käufer SET `open` = `open` - ?";
+    $sqlOpen = "UPDATE käufer SET `open` = `open` - `paid`";
     $stmt = $conn->prepare($sqlOpen);
-    $stmt->bind_param('i',$paid);
     $stmt->execute();
     $stmt->close();
 
