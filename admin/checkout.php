@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->close();
 
-    $sqlOpen = "UPDATE käufer SET `open` = `open` - `paid`";
+    $sqlOpen = "UPDATE käufer SET `open` = `sum` - `paid`";
     $stmt = $conn->prepare($sqlOpen);
     $stmt->execute();
     $stmt->close();
