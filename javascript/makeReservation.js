@@ -7,7 +7,7 @@ document.getElementById('main').addEventListener('submit', function(e) {
     const formData = new FormData(this);
 
     // AJAX-Anfrage erstellen
-    fetch('makeReservation.php', {
+    fetch('/../ticket/makeReservation.php', {
         method: 'POST',
         body: formData
     })
