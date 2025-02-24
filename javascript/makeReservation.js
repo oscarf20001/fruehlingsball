@@ -27,7 +27,8 @@ document.getElementById('main').addEventListener('submit', function(e) {
                 }else if(item.status == 'success'){
                     showMessage('success',item.message);
                 }else{
-                    showMessage('fail',item.message);
+                    console.log(item.message);
+                    showMessage('duplicate',item.message);
                 }
             });
         } else {
@@ -58,6 +59,10 @@ function showMessage(msg, returnWert = null){
 
         case 'fail':
             txt = '❌ ' + returnWert;
+            break;
+
+        case 'duplicate':
+            txt = '❌ Anfrage verweigert! Duplicate Entry ' + support;
             break;
 
         case 'unexpected':
