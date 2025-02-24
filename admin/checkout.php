@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $timestamp = date("Y/m/d - H:i:s");
     $sqlBuchen = "UPDATE `käufer` SET `paid` = `paid` + ?, `method` = ?, `date_paid` = ?, `authenticated_by` = ? WHERE `ID` = ?";
     $stmt = $conn->prepare($sqlBuchen);
-    $stmt->bind_param('dssis', $paid, $methodStr, $timestamp, $k_id, $user);
+    $stmt->bind_param('dssis', $paid, $methodStr, $timestamp, $user, $k_id);
     $stmt->execute();
     $stmt->close();
 
