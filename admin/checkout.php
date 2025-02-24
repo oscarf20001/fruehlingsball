@@ -7,6 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $paid = $_POST['paid'] ?? 0;
     $methodStr = $_POST['method'] ?? 'ohne Angabe';
     $email = $_POST['email'];
+    $user = $_POST['user'] ?? 'root';
 
     // Get buyer ID
     $sqlGetKaeuferId = "SELECT ID FROM käufer WHERE email = ?";
@@ -23,9 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $timestamp = date("Y/m/d - H:i:s");
-    $sqlBuchen = "UPDATE `käufer` SET `paid` = `paid` + ?, `method` = ?, `date_paid` = ? WHERE `ID` = ?";
+    $sqlBuchen = "UPDATE `käufer` SET `paid` = `paid` + ?, `method` = ?, `date_paid` = ?, `authenticated_by` = ? WHERE `ID` = ?";
     $stmt = $conn->prepare($sqlBuchen);
-    $stmt->bind_param('dssi', $paid, $methodStr, $timestamp, $k_id);
+    $stmt->bind_param('dssis', $paid, $methodStr, $timestamp, $k_id, $user);
     $stmt->execute();
     $stmt->close();
 
