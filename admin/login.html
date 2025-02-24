@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login erforderlich</h1>
+    <script>
+        const username = prompt("Bitte geben Sie Ihren Benutzernamen ein:");
+        const password = prompt("Bitte geben Sie Ihr Passwort ein:");
+
+        if (username && password) {
+            fetch("validate.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = "admin.php";
+                    } else {
+                        alert("Ungültige Anmeldedaten!");
+                        window.location.href = "login.html";
+                    }
+                })
+                .catch(() => {
+                    alert("Fehler bei der Anmeldung!");
+                    window.location.href = "login.html";
+                });
+        } else {
+            window.location.href = "/";
+        }
+
+    </script>
+</body>
+</html>

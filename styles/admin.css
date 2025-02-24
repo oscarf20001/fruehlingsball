@@ -1,0 +1,449 @@
+:root{
+    --black: #000;
+    --primary: #081b4b;
+    --secondary: #52c393;
+    --hover: #08164b;
+    --border: #eee;
+    --borderHover: #aaa;
+}
+
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    /*background: linear-gradient(135deg, #081b4b,#09192D);*/
+    background-color: #081b4b;
+    width: 100%;
+    max-width: 100vw;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    overflow-x: hidden;
+    padding: 0 0 0 20px;
+    display: grid;
+    grid-template-areas: 
+    "headline headline"
+    "ticket ticket"
+    "stat1 stat2"
+    "stat3 stat4"
+    ;
+    /*grid-template-rows: 125px calc(50vh - (150px / 2)) calc(50vh - (150px / 2));*/
+    grid-template-rows: auto;
+}
+
+#master-headline{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    margin: 25px 0 0 0;
+    text-align: left;
+    width: 100vw;
+    grid-area: headline;
+}
+
+#getTicketInfo{
+    grid-area: ticket;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+#getTicketInfo #requestTicket{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#requestTicket-F{
+    width: 25%;
+    margin: 0 25px 0 0;
+}
+
+#requestTicket-F .email{
+    width: 100%;
+}
+
+#outer-form{
+    display: flex;
+    align-items: center;
+}
+
+#getTicketInfo #requestTicket h2{
+    margin: 25px 0 0 0;
+}
+
+#getTicketInfo #requestTicket form .formLeft{
+    display: flex;
+    margin: 15px 0 0 0;
+}
+
+/* == INPUTS == */
+
+.input-field {
+    position: relative;
+    border-bottom: 2px solid var(--border);
+    margin: 10px 0;
+}
+
+.input-field label {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 16px;
+    pointer-events: none;
+    transition: 0.2s ease;
+}
+
+.input-field input,
+.input-field select {
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #52C393;
+}
+
+.input-field input::-webkit-outer-spin-button,
+.input-field input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Dropdown styling */
+.input-field select {
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: var(--secondary);
+    padding: 10px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23ffffff' d='M2 0L0 2h4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px;
+}
+
+.input-field select:focus~label,
+.input-field input:focus~label,
+.input-field input:valid~label,
+.input-field select:valid~label {
+    font-size: 0.8rem;
+    top: 10px;
+    transform: translateY(-120%);
+    color: var(--secondary);
+}
+
+input[type="submit"], input[type="button"] {
+    background: #fff;
+    color: #000;
+    font-weight: 600;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 16px;
+    border: 2px solid transparent;
+    transition: 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    color: #fff;
+    border-color: #fff;
+    background-color: #52C393;
+}
+
+input[type="button"]:hover {
+    color: #fff;
+    border-color: #fff;
+    background-color: #c35252;
+}
+
+/* Entfernt Zahleneingabe-Pfeile */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+/* ========================================== */
+
+td{
+    color: rgba(255, 255, 255, 0.751);
+}
+
+.header > td{
+    font-weight: 900;
+    color: rgba(255, 255, 255,1);
+}
+
+#resultTicket{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 30px 0 0 0;
+}
+
+#resultTicket #käufer-data{
+    /*width: calc(100% / 6);*/
+    width: 100%;
+    display: flex;
+}
+
+#resultTicket #käufer-data p{
+    margin: 0 10px 0 0;
+}
+
+#resultTicket #ticket-data{
+    margin: 20px 0 0 0;
+}
+
+.checkOutTicket{
+    margin: 50px 0 0 0;
+    width: 100%;
+}
+
+.checkOutTicket form{
+    display: flex;
+    margin: 20px 0 0 0;
+}
+
+/* ========================================== */
+
+#stat1{
+    grid-area: stat1;
+    background-color: red;
+    width: 100%;
+}
+
+#stat2{
+    grid-area: stat2;
+    width: 100%;
+}
+
+#checkWindow{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(8px); /* Safari und ältere Webkit-Browser */
+    backdrop-filter: blur(8px); /* Moderne Browser */
+    padding: 40px;
+    text-align: center;
+    border: 10px solid red;
+    animation: border 1s ease infinite;
+}
+
+#checkWindow table{
+    text-align: left;
+}
+
+#checkWindow table td{
+    width: 100px;
+}
+
+@keyframes border{
+    0%{
+        border: 15px solid red;
+    }
+    50%{
+        border: 15px solid black;
+    }
+    100%{
+        border: 15px solid red;
+    }
+}
+
+#checkWindow input{
+    margin: 50px 0 0 0;
+}
+
+.euro, .selectOptions{
+    margin: 10px 10px 10px 0;
+}
+
+.selectOptions{
+    width: 150px;
+}
+
+#correction_btn:hover{
+    color: #fff;
+    border-color: #fff;
+    background-color: #52C393;
+}
+
+.k-tr{
+    text-align: left;
+    vertical-align:middle;
+}
+
+#k-status{
+    width: 50px;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#k-status.status0 .circle{
+    background-color: red;
+    box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.6); /* Weicher Leuchteffekt */
+    animation: glow0 1.5s infinite alternate; /* Animation für das Leuchten */
+}
+
+#k-status.status1 .circle{
+    background-color: green;
+    box-shadow: 0 0 10px 5px rgba(0, 128, 0, 0.6); /* Weicher Leuchteffekt */
+    animation: glow1 1.5s infinite alternate; /* Animation für das Leuchten */
+}
+
+.circle{
+    text-align: center;
+    height: 7.5px;
+    width: 7.5px;
+    transform: translateY(50%);
+    background-color: #52c393; /* Grundfarbe des Punkts */
+    border-radius: 50%; /* Rundung */
+}
+
+@keyframes glow0 {
+    0% {
+        box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 20px 10px rgba(255, 0, 0, 1); /* Maximale Helligkeit */
+    }
+}
+
+@keyframes glow1 {
+    0% {
+        box-shadow: 0 0 10px 5px rgba(0, 128, 0, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 20px 10px rgba(0, 128, 0, 1); /* Maximale Helligkeit */
+    }
+}
+
+#suggestions{
+    width: 100%;
+}
+
+#controlls{
+    margin: 50px 0 0 0;
+}
+
+#ticketshop{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100vw;
+}
+
+#ticketshop table{
+    width: 100%;
+    border-collapse: collapse; /* Entfernt die Zwischenräume */
+}
+
+#ticketshop table tr{
+    height: auto; /* Automatische Höhenanpassung */
+    position: relative;
+}
+
+#ticketshop table thead{
+    background-color: rgba(255,255,255,0.2);
+}
+
+#ticketshop table thead th{
+    padding: 10px;
+}
+
+#ticketshop table tr td{
+    vertical-align: middle; /* Inhalte vertikal zentrieren */
+    text-align: center; /* Inhalte horizontal zentrieren */
+    padding: 10px; /* Optionaler Innenabstand */
+}
+
+#circleTableOuter .circleTableOuter{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 100%;
+}
+
+table .controllInput{
+    width: 33%;
+}
+
+table .descriptionStatus{
+    width: 33%;
+}
+
+#ticketshop #circleStatusShop,#circleStatusEinlass,#circleStatusAbendkasse{
+    margin: auto; /* Stellt sicher, dass der Kreis im Zentrum steht */
+}
+
+#circleStatusShop.green,
+#circleStatusEinlass.green,
+#circleStatusAbendkasse.green{
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: green;
+    margin: auto;
+    box-shadow: 0 0 10px 5px rgba(0, 255, 0, 0.6); /* Weicher Leuchteffekt */
+    animation: glow1 1.5s infinite alternate; /* Animation für das Leuchten */
+}
+
+#circleStatusShop.red,
+#circleStatusEinlass.red,
+#circleStatusAbendkasse.red{
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: red;
+    margin: auto;
+    box-shadow: 0 0 10px 5px rgba(0, 255, 0, 0.6); /* Weicher Leuchteffekt */
+    animation: glow0 1.5s infinite alternate; /* Animation für das Leuchten */
+}
+
+.statusBerichte{
+    margin: 50px 0 15px 0;
+}
