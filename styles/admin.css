@@ -447,3 +447,30 @@ table .descriptionStatus{
 .statusBerichte{
     margin: 50px 0 15px 0;
 }
+
+.extraMail{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    position: relative;
+    margin: 2rem 0 0 0;
+}
+
+.extraMail .mail{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+    margin: 1rem;
+}
+
+.extraMail::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1px;
+    width: 100%;
+    background-color: white;
+}

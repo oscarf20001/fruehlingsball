@@ -246,8 +246,18 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             <input type="button" value="Senden!" id="checkout_btn">
         </div>
     </div>
+    <div class="extraMail">
+        <div class="mail">
+            <p>Send extra Mail</p>
+            <input type="submit" value="Resend Mails" id="r_mail">
+        </div>
+    </div>
 
     <script>
+        document.getElementById('r_mail').addEventListener('click', function(){
+            window.location.href = 'new-mail/';
+        });
+
         document.getElementById('pre_checkout_btn').addEventListener('click', function(){
             let checkWindow = document.getElementById('checkWindow');
             checkWindow.style.display = 'flex';
