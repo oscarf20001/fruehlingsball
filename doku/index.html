@@ -26,7 +26,7 @@
         }
 
         .clock{
-            background: blue;
+            /*background: blue;*/
             position: absolute;
             bottom: 0;
             width: 100vw;
@@ -81,9 +81,9 @@
             }
 
             // 12:25:00
-            if(time === '12:33:00'){
+            if(time === '12:35:00'){
                 document.getElementById('subtitle').classList.remove('trans');
-                document.getElementById('subtitle').innerHTML = 'Test for timecode';
+                document.getElementById('subtitle').innerHTML = 'Final Version. Testing timecode';
 
                 setTimeout(()=>{
                     document.getElementById('subtitle').classList.add('trans');
