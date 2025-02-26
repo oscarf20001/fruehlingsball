@@ -80,6 +80,19 @@
                 document.getElementById('time').innerHTML = time;
             }
 
+            // 12:25:00
+            if(time === '17:00:00'){
+                document.getElementById('subtitle').classList.remove('trans');
+                document.getElementById('subtitle').innerHTML = 'Test for timecode';
+
+                setTimeout(()=>{
+                    document.getElementById('subtitle').classList.add('trans');
+                },10000);
+                setTimeout(()=>{
+                    document.getElementById('subtitle').innerHTML = '-';
+                },13000);
+            }
+
             // 17:00:00
             if(time === '17:00:00'){
                 document.getElementById('subtitle').classList.remove('trans');
