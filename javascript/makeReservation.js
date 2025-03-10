@@ -62,7 +62,7 @@ function showMessage(msg, returnWert = null){
             break;
 
         case 'duplicate':
-            txt = '❌ Anfrage verweigert! Dieses Ticket existiert bereits. Bezahle dein Ticket oder wende dich mit "Duplicate Entry" an: ' + support;
+            txt = '❌ Anfrage verweigert! Dieses Ticket existiert bereits. Bezahle dein Ticket oder wende dich mit "Duplicate Entry" an: streiosc@curiegym.de';
             break;
 
         case 'unexpected':
