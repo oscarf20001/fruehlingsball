@@ -255,7 +255,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
     <script>
         document.getElementById('r_mail').addEventListener('click', function(){
-            window.location.href = 'new-mail/';
+            window.location.href = 'new-mail/index.php';
         });
 
         document.getElementById('pre_checkout_btn').addEventListener('click', function(){

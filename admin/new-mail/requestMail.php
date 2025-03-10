@@ -165,6 +165,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 </html>
                 ";
                 break;
+
+            case 'ticket':
+                $nachricht = "404";
+                break;
             
             default:
                 # code...
