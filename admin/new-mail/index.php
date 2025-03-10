@@ -25,8 +25,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     <select name="type" id="typeOfMail">
         <option value="none" disabled selected>-- Bitte auswählen --</option>
         <option value="registration">Reservierungsmail</option>
-        <option value="submitation">Bestätigungsmail</option>
         <option value="pay">Zahlungsaufforderung</option>
+        <option value="submitation">Bestätigungsmail</option>
         <option value="ticket">Ticket</option>
     </select><br>
     <input type="submit" value="Mail versenden!" id="submit">
