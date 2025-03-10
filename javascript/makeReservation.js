@@ -62,7 +62,7 @@ function showMessage(msg, returnWert = null){
             break;
 
         case 'duplicate':
-            txt = '❌ Anfrage verweigert! Duplicate Entry - ' + support;
+            txt = '❌ Anfrage verweigert! Dieses Ticket existiert bereits. Bezahle dein Ticket oder wende dich mit "Duplicate Entry" an: ' + support;
             break;
 
         case 'unexpected':
