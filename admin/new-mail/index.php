@@ -16,6 +16,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Retry | Resend Mails</title>
+    <link rel="stylesheet" href="../../styles/resend.css">
 </head>
 <body>
     <h1>Mails erneut senden!</h1>
@@ -25,8 +26,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         <option value="none" disabled selected>-- Bitte auswählen --</option>
         <option value="registration">Reservierungsmail</option>
         <option value="submitation">Bestätigungsmail</option>
+        <option value="pay">Zahlungsaufforderung</option>
         <option value="ticket">Ticket</option>
-    </select>
+    </select><br>
     <input type="submit" value="Mail versenden!" id="submit">
     <script>
 
@@ -111,6 +113,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                     console.log('Output: ' + output);
                     break;
 
+                case 'pay':
+                    console.log('Zahlungsaufforderung wird gesendet');
+
+                    output = await requestSending(method, email); // Warten auf das Ergebnis
+                    console.log('Output: ' + output);
+                    break;
+
                 case 'ticket':
                     //action
                     console.log('We have to send third Email / QR-Code bzw. Infos');
@@ -127,6 +136,12 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                     break;
             }
         }
+
+        // ------------------------------------------------------------------------------
+        // |                                                                            |
+        // |                        3. Send the email                                   |
+        // |                                                                            |
+        // ------------------------------------------------------------------------------
 
         async function requestSending(method, email) {
             try {
@@ -149,6 +164,12 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 return null; // Oder du kannst einen Standardwert zurückgeben, falls ein Fehler auftritt
             }
         }
+
+        // ------------------------------------------------------------------------------
+        // |                                                                            |
+        // |                        4. Show possible Erros on Screen                    |
+        // |                                                                            |
+        // ------------------------------------------------------------------------------
 
 
         function showMessageOnScreen(code){

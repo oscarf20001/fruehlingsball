@@ -122,6 +122,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 </body>
                 </html>
                 ";
+                $mail->Subject = 'Fancytastische Buchungsbestätigung: Frühlingsball 2025';
                 break;
 
             case 'submitation':
@@ -164,12 +165,60 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 </body>
                 </html>
                 ";
+                $mail->Subject = 'Ticketbestätigung Frühlingsball';
                 break;
 
             case 'ticket':
                 $nachricht = "404";
                 break;
-            
+
+            case 'pay':
+                $nachricht = "
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset='UTF-8'>
+                    <title>Frühlingsball</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            line-height: 1.6;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        th, td {
+                            padding: 8px;
+                            text-align: left;
+                            border: 1px solid #ddd;
+                        }
+                        th {
+                            background-color: #f2f2f2;
+                        }
+                        p {
+                            margin: 16px 0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <p>Hey " . htmlspecialchars(getName($conn, $email_empfänger), ENT_QUOTES, 'UTF-8') . ",</p>
+                    <p>Wir bitten dich, deine Kosten für den Frühlingsball des MCG 2025 in Höhe von:<br><br>
+                    <strong>". htmlspecialchars(getSum($conn, $email_empfänger)) . "€</strong><br><br>
+                    zu begleichen. Wir würden es dir sehr hoch anrechnen, wenn du genannten Betrag möglichst zeitnahe, allerdings jedoch bis 30.03 an uns zahlst. Dafür hast du zwei Möglichkeiten:<br><br>
+                    1. Du kannst uns das Geld jeweils Dienstag und Donnerstag in der zweiten Pause (ausgenommen 11.03: da bitte in der dritten Pause aufgrund einer Klausur der K12) vor der Bibliothek in Bar geben (eignet sich nur für Schüler und Lehrer des MCGs)<br>
+                    2. Außerdem kannst du das Geld auch auf folgendes Konto überweisen. Wenn du dich für diese Methode entscheidest, achte bitte darauf, dass das Geld bis zum 30.03 eingegangen sein muss und du eventuell mit einer Zustellungsdauer von bis zu drei Tagen rechnen solltest:<br>
+                    <strong>IBAN:</strong> ".$iban."<br>
+                    <strong>Name:</strong> Raphael Stark<br>
+                    <strong>Verwendungszweck:</strong> \"". str_replace("@", "at", $email_empfänger)." Frühlingsball\"<br><br>
+                    Wir freuen uns über deine Anmeldung und würden dir daher sehr verbunden sein, wenn du deine offene Summe möglichst fancy & schnell begleichst.<br><br>
+                    Mit freundlichen Grüßen,<br>Gordon!</p>
+                </body>
+                </html>
+                ";
+                $mail->Subject = 'Zahlungsaufforderung bezüglich des Frühlingsballs';
+                break;
+
             default:
                 # code...
                 break;
@@ -194,7 +243,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
             // Nachricht
             $mail->isHTML(true);
-            $mail->Subject = 'Fancytastische Buchungsbestätigung: Frühlingsball 2025';
             $mail->Body    = $nachricht;
 
             $mail->send();
