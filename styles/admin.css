@@ -267,6 +267,7 @@ td{
     text-align: center;
     border: 10px solid red;
     animation: border 1s ease infinite;
+    z-index: 10;
 }
 
 #checkWindow table{
@@ -446,6 +447,7 @@ table .descriptionStatus{
 
 .statusBerichte{
     margin: 50px 0 15px 0;
+    z-index: 1;
 }
 
 .extraMail{
@@ -455,6 +457,7 @@ table .descriptionStatus{
     width: 100vw;
     position: relative;
     margin: 2rem 0 0 0;
+    z-index: 1;
 }
 
 .extraMail .mail{
