@@ -123,6 +123,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 case 'ticket':
                     //action
                     console.log('We have to send third Email / QR-Code bzw. Infos');
+
+                    output = await requestSending(method, email); // Warten auf das Ergebnis
+                    console.log('Output: ' + output);
                     break;
 
                 case 'none':
@@ -134,6 +137,10 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                     //action
                     console.log('If we are here, this is not good!')
                     break;
+            }
+
+            if(output[0] == "fail"){
+                showMessageOnScreen(output[1])
             }
         }
 
@@ -158,7 +165,16 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 }
                 
                 const data = await response.json();
-                return [data.mail_type,data.mail]; // Der Wert wird jetzt direkt zurückgegeben
+                if (data && data.status && data.email) {
+                    console.log('Status:', data.status);
+                    console.log('Email:', data.email);
+                    console.log('Reason:', data.reason);
+
+                    // Beispiel: Du kannst auch die Nachricht zurückgeben
+                    return [data.status, data.reason, data.email];
+                } else {
+                    throw new Error('Unerwartetes Antwortformat: ' + JSON.stringify(data));
+                }
             } catch (error) {
                 console.error('Es gab ein Problem mit der Fetch-Operation:', error);
                 return null; // Oder du kannst einen Standardwert zurückgeben, falls ein Fehler auftritt
@@ -197,6 +213,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 case 'Fe_Enf':
                     msg = 'Fatal Error. Email wurde nicht in der Datebank gefunden!'
                     console.error('Fatal Error. Email wurde nicht in der Datebank gefunden!');
+                    break;
+                
+                case 'notPayed':
+                    msg = 'Email wird nicht gesendet: Person hat noch nicht bezahlt!';
+                    console.error('Email wird nicht gesendet: Person hat noch nicht bezahlt!');
+                    createFullscreenBlur(msg);
+                    break;
 
                 default:
                     msg = 'Unknown/Unexpected Error'
@@ -204,6 +227,57 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                     break;
             }
         }
+
+        function createFullscreenBlur(msg, email) {
+            // Erstelle das Div-Element
+            const div = document.createElement('div');
+            div.style.position = 'fixed';  // Positioniert das Div fest auf dem Bildschirm
+            div.style.top = '0';
+            div.style.left = '0';
+            div.style.width = '100vw';  // Vollbildbreite
+            div.style.height = '100vh'; // Vollbildhöhe
+            div.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Hintergrund mit halbtransparenter Farbe
+            div.style.display = 'flex';
+            div.style.justifyContent = 'center'; // Zentrieren des Inhalts horizontal
+            div.style.alignItems = 'center'; // Zentrieren des Inhalts vertikal
+            div.style.flexDirection = 'column'; // Zentrieren des Inhalts vertikal
+            div.style.backdropFilter = 'blur(10px)'; // Wendet den Unschärfeeffekt auf den Hintergrund an
+            div.style.zIndex = '1000'; // Stellt sicher, dass es oben auf allen anderen Elementen angezeigt wird
+
+            // Erstelle den Text
+            const text = document.createElement('p');
+            text.textContent = '❌ ' + msg;
+            text.style.color = 'white';
+            text.style.fontSize = '24px';
+            text.style.fontFamily = 'Arial, sans-serif';
+
+            // Füge den Text zum Div hinzu
+            div.appendChild(text);
+
+            // Erstelle den Button
+            const button = document.createElement('button');
+            button.textContent = 'Schließen';
+            button.style.marginTop = '20px';
+            button.style.padding = '10px 20px';
+            button.style.fontSize = '16px';
+            button.style.cursor = 'pointer';
+            button.style.backgroundColor = '#ff4d4d';
+            button.style.border = 'none';
+            button.style.color = 'white';
+            button.style.borderRadius = '5px';
+
+            // Füge die Schließfunktion zum Button hinzu
+            button.onclick = function() {
+                div.remove();  // Entfernt das Div-Element, wenn der Button geklickt wird
+            };
+
+            // Füge den Button zum Div hinzu
+            div.appendChild(button);
+
+            // Füge das Div zum Body der Seite hinzu
+            document.body.appendChild(div);
+        }
+
     </script>
 </body>
 </html>
