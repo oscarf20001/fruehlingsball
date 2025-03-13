@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controll Panel Einlass Frühlingsball MCG 2025</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Einlass-Panel Frühlingsball</h1>
+    <div id="output"></div>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:8080');
+        let lastEmail = '';
+        let firstRequest = true;
+
+        socket.onopen = () => {
+            console.log('WebSocket-Verbindung hergestellt!');
+        };
+
+        socket.onmessage = (event) => {
+            try {
+
+                const data = JSON.parse(event.data); // JSON parsen
+                const person = data.update;
+                const personId = person.ID; // ID des Datensatzes
+
+                if(firstRequest){
+                    lastEmail = person.email;
+                    firstRequest = false;
+                    return;
+                }
+
+                if(lastEmail !== person.email){
+                    
+                    // Prüfen, ob die letzte Email gleich der aktuellen ist - wenn ja, dann sollen keine neuen Daten angezeigt werden
+                    lastEmail = person.email;
+
+                    // Tabelle holen oder erstellen
+                    let table = document.getElementById("data-table");
+                    if (!table) {
+                        table = document.createElement("table");
+                        table.id = "data-table";
+                        table.border = "1";
+
+                        // Tabellenkopf erstellen
+                        const headerRow = table.insertRow();
+                        ["Zeitpunkt", "ID", "Vorname", "Nachname", "Alter", "Summe", "Offen", "Status"].forEach(text => {
+                            const th = document.createElement("th");
+                            th.textContent = text;
+                            headerRow.appendChild(th);
+                        });
+
+                        document.body.appendChild(table);
+                    }
+
+                    // Neue Zeile zur Tabelle hinzufügen (immer!)
+                    const row = table.insertRow();
+                    
+                    // Timestamp hinzufügen (wann die Änderung empfangen wurde)
+                    const timestamp = new Date().toLocaleString();
+                    row.insertCell().textContent = timestamp;
+
+                    row.insertCell().textContent = personId;
+                    row.insertCell().textContent = person.vorname;
+                    row.insertCell().textContent = person.nachname;
+                    row.insertCell().textContent = person.age;
+                    row.insertCell().textContent = person.sum;
+                    row.insertCell().textContent = person.open;
+                    row.insertCell().textContent = person.status;
+
+                }
+            } catch (error) {
+                console.error("Fehler beim Parsen von JSON:", error);
+            }
+        };
+
+        socket.onerror = (error) => {
+            console.error('WebSocket-Fehler:', error);
+        };
+
+        socket.onclose = () => {
+            console.log('WebSocket-Verbindung geschlossen.');
+        };
+    </script>
+</body>
+</html>
