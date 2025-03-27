@@ -25,3 +25,7 @@ qrcode/codes/
 qrcodes/
 
 *.log
+
+barcodes/
+node_modules/
+venv/

@@ -1,0 +1,188 @@
+<?php
+include '../affiliations/php/db_connection.php';
+require __DIR__ . '/../affiliations/php/vendor/autoload.php';
+// Pfad zum Autoloader von Composer einbinden
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use Dotenv\Dotenv;
+
+// .env-Datei laden
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../affiliations/php');
+$dotenv->load();
+
+//WRITE ALL MAILS INTO AN ARRAY AND SAFE THIS ARRAY IN AN EXTERNAL FILE
+
+//ALLE KÄUFER MAILS GÖNNEEEENN !!!!!!!!!!!! LIMIT STATEMENT ENTFERNEN, WENN IN PRODUCTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#$sqlGetAllMails = "SELECT email, vorname, nachname, open FROM käufer WHERE email LIKE '%@gmail.com' AND ID >= 86 LIMIT 0";
+$sqlGetAllMails = "SELECT email, vorname, nachname, open FROM käufer WHERE open > 0";
+$stmt = $conn->prepare($sqlGetAllMails);
+$stmt->execute();
+$result = $stmt->get_result();
+$allMails = array();
+
+$iban = "DE61 1605 0000 1102 4637 24";
+
+function writeToLog($logHandle, $message) {
+    fwrite($logHandle, "[" . date('Y-m-d H:i:s') . "] " . $message . PHP_EOL);
+}
+
+// Öffne oder erstelle die Logdatei
+$logFile = __DIR__ . '/email_log_käufer.txt';
+$logHandle = fopen($logFile, 'a');
+
+if (!$logHandle) {
+    die("Fehler beim Öffnen der Logdatei.");
+}
+
+while ($row = $result->fetch_assoc()) {
+    $allMails[] = [
+        'email' => $row['email'],
+        'vorname' => $row['vorname'],
+        'nachname' => $row['nachname'],
+        'sum' => $row['open']
+    ];
+}
+
+for ($i=0; $i < count($allMails); $i++) {
+    //ID DIESER EINEN EMAIL AUFRUFEN, MIT DER DANN ALLE TICKETS GEFUNDEN WERDEN KÖNNEN, DIE AUF DIESE MAIL GEBUCHT WURDEN
+    $sqlGetId = "SELECT ID FROM käufer WHERE email = '{$allMails[$i]['email']}'";
+    $stmt = $conn->prepare($sqlGetId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $id = $row['ID'];
+
+    //DATEN KÄUFER SPEICHERN = VORNAME, EMAIL (ZUM SENDEN), KOSTEN
+    $nameKäufer = $allMails[$i]['vorname'];
+    $emailKäufer = $allMails[$i]['email'];
+    $sum = $allMails[$i]['sum'];
+
+    //EMAIL VERSAND VORBEREITEN
+    if ($emailKäufer && $sum && $nameKäufer) {
+        // Nachricht und E-Mail-Inhalt erstellen
+        $nachricht = "
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset='UTF-8'>
+                        <title>Frühlingsball</title>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                line-height: 1.6;
+                            }
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+                            th, td {
+                                padding: 8px;
+                                text-align: left;
+                                border: 1px solid #ddd;
+                            }
+                            th {
+                                background-color: #f2f2f2;
+                            }
+                            p {
+                                margin: 16px 0;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <p>Guten Morgen " . htmlspecialchars(getName($conn, $emailKäufer), ENT_QUOTES, 'UTF-8') . ",</p>
+                        vergiss den Ländercode bitte nicht. Hier die finale IBAN für eure Überweisungen: <strong>" .$iban. "</strong><br><br>
+
+                        Mit allerliebsten Grüßen,<br>
+                        Gordon!</p>
+                    </body>
+                </html>
+                ";
+
+        try {
+            $mail = new PHPMailer(true);
+            
+            // SMTP-Konfiguration
+            $mail->isSMTP();
+            $mail->Host = $_ENV['MAIL_HOST'];
+            $mail->SMTPAuth = true;
+            $mail->Username = $_ENV['MAIL_USERNAME'];
+            $mail->Password = $_ENV['MAIL_PASSWORD'];
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = $_ENV['MAIL_PORT'];
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
+
+            // Absender und Empfänger
+            $mail->setFrom($_ENV['MAIL_USERNAME'], 'Marie-Curie Gymnasium');
+            $mail->addReplyTo('streiosc@curiegym.de', 'Oscar');
+            $mail->addAddress($emailKäufer, $nameKäufer);
+
+            // E-Mail-Inhalt
+            $mail->isHTML(true);
+            $mail->Body = $nachricht;
+            $mail->Subject = 'Finale IBAN';
+            $mail->AltBody = 'Dies ist der Klartext-Inhalt der E-Mail.';
+
+            // E-Mail senden
+            // E-Mail senden und loggen
+            if ($mail->send()) {
+                writeToLog($logHandle, "ERFOLG: E-Mail an {$emailKäufer} über {$sum}€ gesendet.");
+            } else {
+                writeToLog($logHandle, "FEHLER: E-Mail an {$emailKäufer} über {$sum}€ nicht gesendet. Fehler: " . $mail->ErrorInfo);
+            }
+
+            // Empfänger und Anhänge leeren
+            $mail->clearAddresses();
+            $mail->clearAttachments();
+            sleep(1);
+        } catch (Exception $e) {
+            writeToLog($logHandle, "FEHLER: E-Mail an {$emailKäufer} über {$sum}€ nicht gesendet. Fehler: {$mail->ErrorInfo}");
+        }
+    }
+}
+
+fclose($logHandle);
+
+// Verbindung schließen
+$conn->close();
+
+function getName($conn, $email_empfänger){
+    $sql = "SELECT vorname FROM käufer WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email_empfänger);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    return $row['vorname'];
+}
+
+function getOpen($conn,$email){
+    $sumQuery = "SELECT open AS SUM FROM käufer WHERE email = ?";
+    $stmt = $conn->prepare($sumQuery);
+    $stmt->bind_param('s',$email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    return $row['SUM'];
+}
+
+function getSum($conn,$email){
+    $sumQuery = "SELECT sum AS SUM FROM käufer WHERE email = ?";
+    $stmt = $conn->prepare($sumQuery);
+    $stmt->bind_param('s',$email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    return $row['SUM'];
+}
+
+function getID($conn, $email){
+    $idQuery = "SELECT ID AS ID FROM käufer WHERE email = ?";
+    $stmt = $conn->prepare($idQuery);
+    $stmt->bind_param('s',$email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $id = $row['ID'];
+    return $id;
+}

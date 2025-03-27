@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel Einlass Frühlingsball MCG 2025</title>
+    <link rel="stylesheet" href="../styles/default.css">
+    <link rel="stylesheet" href="../styles/entrance.css">
+</head>
+<body>
+    <h1>Einlass-Panel Frühlingsball</h1>
+    <div id="output"></div>
+
+    <script>
+        const socket = new WebSocket('ws://127.0.0.1:8080');
+        let lastEmail = '';
+        let firstRequest = true;
+        let zuschlag = 2.50
+
+        socket.onopen = () => console.log('WebSocket-Verbindung hergestellt!');
+        socket.onerror = (error) => console.error('WebSocket-Fehler:', error);
+        socket.onclose = () => console.log('WebSocket-Verbindung geschlossen.');
+
+        socket.onmessage = async (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                const person = data.update;
+                const personId = person.ID;
+
+                if (firstRequest) {
+                    lastEmail = person.email;
+                    firstRequest = false;
+                    return;
+                }
+
+                if (lastEmail !== person.email) {
+                    lastEmail = person.email;
+                    updateTable(person, await doChecks(personId));
+                }
+            } catch (error) {
+                console.error("Fehler beim Parsen von JSON:", error);
+            }
+        };
+
+        async function doChecks(id) {
+            try {
+                const response = await fetch('doChecks.php', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: "id=" + encodeURIComponent(id)
+                });
+                const data = await response.json();
+                return !data.paid ? 401 : data.extra ? 402 : 200;
+            } catch (error) {
+                console.error('Fehler:', error);
+                return null;
+            }
+        }
+
+        function updateTable(person, code) {
+            let table = document.getElementById("data-table");
+            if (!table) {
+                table = document.createElement("table");
+                table.id = "data-table";
+                document.body.appendChild(table);
+                
+                const headerRow = table.insertRow();
+                ["Zeitpunkt", "ID", "Vorname", "Nachname", "Alter", "Summe", "Status"].forEach(text => {
+                    const th = document.createElement("th");
+                    th.textContent = text;
+                    headerRow.appendChild(th);
+                });
+            }
+
+            const row = table.insertRow(1);
+            row.insertCell().textContent = new Date().toLocaleString();
+            row.insertCell().textContent = person.ID;
+            row.insertCell().textContent = person.vorname;
+            row.insertCell().textContent = person.nachname;
+            row.insertCell().textContent = person.age;
+            row.insertCell().textContent = person.sum;
+
+            const statusCell = row.insertCell();
+            const statusDiv = document.createElement("div");
+            statusDiv.id = "status-light";
+            statusCell.appendChild(statusDiv);
+
+            switch (code) {
+                case 200:
+                    statusDiv.style.backgroundColor = "green";
+                    statusDiv.style.animation = "glow1 1.5s infinite alternate";
+                    break;
+                case 402:
+                    // Person needs to pay extra
+                    statusDiv.style.backgroundColor = "yellow";
+                    statusDiv.style.animation = "glow2 1.5s infinite alternate";
+
+                    if(triggerPayWindow(person)){
+                        // TODO: Ausführung von einer Datei, die in der Datenbank den ExtraPay verändert
+                    }else{
+//
+                    }
+
+                    break;
+                case 401:
+                    statusDiv.style.backgroundColor = "red";
+                    statusDiv.style.animation = "glow3 1.5s infinite alternate";
+
+                    // TODO: Ausführung einer Datei, die den Einlass für dieses Ticket wieder rückgängig macht
+                    fetch('undoReservation.php',{
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: "id=" + encodeURIComponent(id)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.message)
+                    })
+                    .catch(error => {
+                        console.error('Fehler:', error);
+                        return null; // Bei Fehlern null zurückgeben oder eine andere Aktion ausführen
+                    })
+
+                    break;
+            }
+        }
+
+        function triggerPayWindow(person){
+            let id = person.ID;
+            alert("Die Person:<b>" + person.vorname + " " + person.nachname + "</b>\nmuss einen Zuschlag von:\n\n" + zuschlag + "€\n\nzahlen");
+            return true;
+        }
+        
+    </script>
+</body>
+</html>

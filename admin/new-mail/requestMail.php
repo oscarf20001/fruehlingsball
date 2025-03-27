@@ -216,7 +216,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         <strong>". htmlspecialchars(getSum($conn, $email_empfänger)) . "€</strong><br><br>
                         zu begleichen. Wir würden es dir sehr hoch anrechnen, wenn du genannten Betrag möglichst zeitnahe, allerdings jedoch bis 30.03 an uns zahlst. Dafür hast du zwei Möglichkeiten:<br><br>
                         1. Du kannst uns das Geld jeweils Dienstag und Donnerstag in der zweiten Pause (ausgenommen 11.03: da bitte in der dritten Pause aufgrund einer Klausur der K12) vor der Bibliothek in Bar geben (eignet sich nur für Schüler und Lehrer des MCGs)<br>
-                        2. Außerdem kannst du das Geld auch auf folgendes Konto überweisen. Wenn du dich für diese Methode entscheidest, achte bitte darauf, dass das Geld bis zum 30.03 eingegangen sein muss und du eventuell mit einer Zustellungsdauer von bis zu drei Tagen rechnen solltest:<br>
+                        2. Außerdem kannst du das Geld auch auf folgendes Konto überweisen. Wenn du dich für diese Methode entscheidest, achte bitte darauf, dass das Geld bis zum 30.03 eingegangen sein muss und du eventuell mit einer Zustellungsdauer von bis zu drei Tagen rechnen solltest:<br><br>
                         <strong>IBAN:</strong> ".$iban."<br>
                         <strong>Name:</strong> Raphael Stark<br>
                         <strong>Verwendungszweck:</strong> \"". str_replace("@", "at", $email_empfänger)." Frühlingsball\"<br><br>

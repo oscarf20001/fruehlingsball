@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel Einlass Frühlingsball MCG 2025</title>
+    <link rel="stylesheet" href="../styles/default.css">
+    <link rel="stylesheet" href="../styles/entrance.css">
+</head>
+<body>
+    <h1>Einlass-Panel Frühlingsball</h1>
+    <script>
+        class WebSocketManager {
+            constructor(url, personManager) {
+                this.socket = new WebSocket(url);
+                this.personManager = personManager;
+
+                this.init()
+            }
+
+            init(){
+                this.socket.onopen = () => console.log('WebSocket-Verbindung hergestellt!');
+                this.socket.onerror = (error) => console.error('WebSocket-Fehler:', error);
+                this.socket.onclose = () => console.log('WebSocket-Verbindung geschlossen.');
+
+                this.socket.onmessage = async (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        this.personManager.processPerson(data.update);
+                    } catch (error) {
+                        console.error("Fehler beim Parsen von JSON:", error);
+                    }
+                };
+            }
+        }
+
+        class PersonManager {
+            constructor(uiManager, zuschlag) {
+                this.lastEmail = '';
+                this.uiManager = uiManager;
+                this.zuschlag = zuschlag;
+            }
+
+            async processPerson(person) {
+                if (this.lastEmail !== person.email) {
+                    this.lastEmail = person.email;
+                    const statusCode = await this.doChecks(person.ID);
+                    this.uiManager.updateTable(person, statusCode);
+                }
+            }
+
+            async doChecks(id) {
+                try {
+                    const response = await fetch('doChecks.php', {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: "id=" + encodeURIComponent(id)
+                    });
+                    const data = await response.json();
+                    return !data.paid ? 401 : data.extra ? 402 : 200;
+                } catch (error) {
+                    console.error('Fehler:', error);
+                    return null;
+                }
+            }
+
+            handleExtraPayment(person) {
+                // Background Filler in Glasmorphism Style
+                const blurryFiller_extraPayment = document.createElement('div');
+                blurryFiller_extraPayment.id = 'blurryFiller_extraPaymentWindow';
+                document.body.appendChild(blurryFiller_extraPayment)
+
+                // Centered Div for Text Content
+                const extraPaymentDiv = document.createElement('div');
+                extraPaymentDiv.id = 'extraPaymentWindow';
+                blurryFiller_extraPayment.appendChild(extraPaymentDiv);
+
+                // Text Content in centered div
+                const textElement_extraPayment = document.createElement('p');
+                textElement_extraPayment.innerHTML = `Die Person: <strong>${person.vorname} ${person.nachname}</strong> muss einen Zuschlag von <strong>${this.zuschlag}0€</strong> zahlen.<br>
+                Drücke "Enter" zum Bestätigen. Drücke "c" zum abbrechen`
+                extraPaymentDiv.appendChild(textElement_extraPayment);
+
+                // div for Buttons for verification
+                const buttons_extraPayment = document.createElement('div');
+                buttons_extraPayment.id = 'buttons_extraPayment';
+                extraPaymentDiv.appendChild(buttons_extraPayment);
+
+                // buttons into div
+                const button_cancelPayment = document.createElement('input');
+                button_cancelPayment.type = 'button';
+                button_cancelPayment.value = 'Zahlung abbrechen';
+                button_cancelPayment.id = 'cancelPayment_btn'
+                buttons_extraPayment.appendChild(button_cancelPayment);
+
+                const button_verifyPayment = document.createElement('input');
+                button_verifyPayment.type = 'button';
+                button_verifyPayment.value = 'Zahlung bestätigen';
+                button_verifyPayment.id = 'submitPayment_btn'
+                buttons_extraPayment.appendChild(button_verifyPayment);
+                
+                // Event Listener for Keypress
+                this.keyPressListener = (e) => {
+                    if(e.key === 'Enter'){
+                        this.uiManager.editPerson(person, 200);
+                    } else if(e.key === 'c'){
+                        this.uiManager.editPerson(person, 401);
+                        this.undoReservation(person.ID);
+                    } else {
+                        console.log("Wrong keypress: " + e.key);
+                    }
+                }
+                document.addEventListener('keypress', this.keyPressListener);
+
+                // Event Listener for clicking on the submit button
+                this.verifyPaymentListener = () =>{
+                    console.log("✅ Payment has been taking place")
+                    this.uiManager.editPerson(person, 200);
+                }
+                button_verifyPayment.addEventListener('click',this.verifyPaymentListener);
+                
+                // Event Listener for clicking on the cancel button
+                this.cancelPaymentListener = () =>{
+                    console.log("❌ We should cancle the Payment")
+                    this.uiManager.editPerson(person, 401);
+                    this.undoReservation(person.ID);
+                }
+                button_cancelPayment.addEventListener('click',this.cancelPaymentListener);
+            }
+
+            removeEventListeners() {
+                // Entferne die Event-Listener, wenn sie nicht mehr benötigt werden
+                if (this.keyPressListener) {
+                    document.removeEventListener('keypress', this.keyPressListener);
+                }
+                if (this.cancelPaymentListener) {
+                    document.getElementById('cancelPayment_btn').removeEventListener('click', this.cancelPaymentListener);
+                }
+                if (this.verifyPaymentListener) {
+                    document.getElementById('submitPayment_btn').removeEventListener('click', this.verifyPaymentListener);
+                }
+            }
+
+            async undoReservation(id) {
+                try {
+                    const response = await fetch('undoReservation.php', {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: "id=" + encodeURIComponent(id)
+                    });
+                    const data = await response.json();
+                    console.log(data.message);
+                } catch (error) {
+                    console.error('Fehler:', error);
+                }
+            }
+        }
+
+        class UIManager {
+            constructor() {}
+
+            editPerson(person, code){
+                // Zugriff auf das tr-Element mit der ID '6'
+                const trElement = document.getElementById(person.ID);
+
+                // Zugriff auf die td mit der ID 'status-light' innerhalb dieses tr-Elements
+                const tdElement = trElement.querySelector('#status-light');
+
+                // Optional: Ändere etwas im td-Element (z. B. Hintergrundfarbe)
+                if (tdElement) {
+                    switch (code) {
+                        case 200:
+                            tdElement.style.backgroundColor = "green";
+                            tdElement.style.animation = "glow1 1.5s infinite alternate";       
+                            break;
+
+                        case 401:
+                            tdElement.style.backgroundColor = "rgba(0, 229, 255, 1)";
+                            tdElement.style.animation = "glow4 1.5s infinite alternate";
+                            break;
+
+                        default:
+                            break;
+                    }
+                } else {
+                    console.log('Das td mit der ID "status-light" wurde nicht gefunden.');
+                }
+
+                // Window schließen und Event Listener killen
+                personManager.removeEventListeners();
+                document.getElementById('blurryFiller_extraPaymentWindow').remove();
+            }
+
+            updateTable(person, code) {
+                let table = document.getElementById("data-table");
+                if (!table) {
+                    table = this.createTable();
+                }
+
+                const row = table.insertRow(1);
+                row.id = person.ID;
+                row.insertCell().textContent = new Date().toLocaleString();
+                row.insertCell().textContent = person.ID;
+                row.insertCell().textContent = person.käufer_ID;
+                row.insertCell().textContent = person.vorname;
+                row.insertCell().textContent = person.nachname;
+                row.insertCell().textContent = person.age;
+                row.insertCell().textContent = person.sum;
+
+                const statusCell = row.insertCell();
+                const statusDiv = document.createElement("div");
+                statusDiv.id = "status-light";
+                statusCell.appendChild(statusDiv);
+                statusCell.classList.add("status-cell");
+
+                switch (code) {
+                    case 200:
+                        statusDiv.style.backgroundColor = "green";
+                        statusDiv.style.animation = "glow1 1.5s infinite alternate";
+                        break;
+                    
+                    case 402:
+                        statusDiv.style.backgroundColor = "yellow";
+                        statusDiv.style.animation = "glow2 1.5s infinite alternate";
+                        personManager.handleExtraPayment(person);
+                        break;
+
+                    case 401:
+                        statusDiv.style.backgroundColor = "red";
+                        statusDiv.style.animation = "glow3 1.5s infinite alternate";
+                        personManager.undoReservation(person.ID);
+                        break;
+                    
+                    default: 
+                        statusDiv.style.backgroundColor = "blue";
+                        statusDiv.style.animation = "glow4 1.5s infinite alternate";
+                        break;
+                }
+            }
+
+            createTable() {
+                const table = document.createElement("table");
+                table.id = "data-table";
+                document.body.appendChild(table);
+
+                const headerRow = table.insertRow();
+                ["Zeitpunkt", "ID", "Käufer", "Vorname", "Nachname", "Alter", "Summe", "Status"].forEach(text => {
+                    const th = document.createElement("th");
+                    th.textContent = text;
+                    th.id = text;
+                    headerRow.appendChild(th);
+                });
+
+                return table;
+            }
+        }
+
+        // Initialisierung defaults
+        const zuschlag = 2.5;
+
+        // Initialisierung der Klassen
+        const uiManager = new UIManager();
+        const personManager = new PersonManager(uiManager, zuschlag);
+//        const webSocketManager = new WebSocketManager('ws://127.0.0.1:8080', personManager);
+        const webSocketManager = new WebSocketManager('ws://192.168.178.102:8080', personManager);
+
+
+    </script>
+</body>
+</html>

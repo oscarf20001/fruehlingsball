@@ -14,7 +14,7 @@ require '../affiliations/php/db_connection.php';
 // CHECKS - IS OPEN?
 
 # Funktion check kommt aus check.php
-if(!checks('Einlass', $conn)){
+if(!checks('Shop', $conn)){
     die("Ticketshop geschlossen. Kein Ticketkauf möglich!");
 }
 
