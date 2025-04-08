@@ -17,8 +17,8 @@ import time
 notEveryOneIsCheckedIn = True
 firstCheckIn = True
 #dateForMorMoney = 1744394400 # 11.04.2025 um 20:00:00 Uhr GMT
-#dateForMorMoney = time.time() # 11.04.2025 um 20:00:00 Uhr GMT
-dateForMorMoney = 1743022456 # 11.04.2025 um 20:00:00 Uhr GMT
+#dateForMorMoney = time.time()
+dateForMorMoney = 1743022456 # force xtraMoney
 
 # Variables for database
 zuschlag_price = 2.50

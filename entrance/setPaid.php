@@ -10,14 +10,6 @@ require '../affiliations/php/mail.php';
 require '../affiliations/php/check.php';
 require '../affiliations/php/db_connection.php';
 
-// CHECKS - IS OPEN?
-
-# Funktion check kommt aus check.php
-if(!checks('Einlass', $conn)){
-    echo json_encode(["error" => "Einlass geschlossen. Es werden zur Zeit keine Ticketscanns erlaubt!"]);
-    exit();
-}
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = $_POST['id'] ?? null;
 
@@ -26,10 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    $stmt = $conn->prepare("UPDATE tickets SET Bar_Einlass = 0, ts_einlass = '-' WHERE id = ?");
+    $stmt = $conn->prepare("UPDATE tickets SET zuschlag_paid = 1 WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $stmt->close();
 
-    echo json_encode(["message"=>"Einlass für Ticket $id wurde rückgängig gemacht!"]);
+    echo json_encode(["message"=>"Paid wurde für Ticket $id auf 1 gesetzt!"]);
 }

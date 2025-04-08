@@ -10,6 +10,49 @@
     <link rel="stylesheet" href="../styles/ticket.css">
 </head>
 <body>
+
+    <script>
+        async function checkEntrance(service, request) {
+            try {
+                const response = await fetch('../admin/switchEntranceStatus.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `service=${service}&request=${request}`
+                });
+
+                const data = await response.json();
+
+                if (data && (data.new_stat == 1 || data.status == 1)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (error) {
+                console.error('Fehler:', error);
+                alert('Es gab einen Fehler');
+            }
+        }
+
+        // Laden der Seite, um die Anfragen beim Laden auszuführen
+        window.addEventListener('load', async function() {
+            let isOpen = await checkEntrance('Shop', 'get');
+            if(!isOpen){
+                ['name','vorname','email','telNumber','age','klasse','cntTickets','kaeufer_ticket','name01','prename01','mail01','age01','checkData'].forEach(element => {
+                    document.getElementById(element).disabled = true;
+                });
+                
+                //CREATE CLOSING BANNER
+                const banner = document.createElement("div");
+                banner.classList.add("closingBanner");
+                banner.innerHTML = "Aktuell ist der Ticketshop geschlossen! Bei wichtigen Anfragen melden Sie sich bitte bei dieser Email-Adresse: streiosc@curiegym.de";
+
+                //CLOSING BANNER HINZUFÜGEN
+                const body = document.querySelector('body');
+                body.prepend(banner);
+            }
+        });
+    </script>
+
     <!-- HEADLINE -->
     <header id="head">
         <h2>Reservierung für den Frühlingsball des MCG 2025</h2>

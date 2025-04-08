@@ -246,14 +246,79 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             <input type="button" value="Senden!" id="checkout_btn">
         </div>
     </div>
-    <div class="extraMail">
-        <div class="mail">
-            <p>Send extra Mail</p>
-            <input type="submit" value="Resend Mails" id="r_mail">
+    <div class="downerContainer">
+        <div class="extraMail">
+            <div class="mail">
+                <p class="controll_Service_Description controll_Service_Description_Mail">Send extra Mail</p>
+                <input type="submit" value="Resend Mails" id="r_mail" class="controll_Service_Button">
+            </div>
+        </div>
+        <div class="openEntrance controllUnit">
+            <div class="entranceControlls controlls">
+                <div id="" class="st-light_container">
+                    <div id="statusLightEinlass_downer" class="st-light"></div>
+                </div>
+                <p class="controll_Service_Description">Einlass</p>
+                <input type="submit" value="Einlass öffnen" id="r_openEinlass" class="controll_Service_Button">
+            </div>
+        </div>
+        <div class="openShop controllUnit">
+            <div class="shopControlls controlls">
+                <div id="" class="st-light_container">
+                    <div id="statusLightShop_downer" class="st-light"></div>
+                </div>
+                <p class="controll_Service_Description">Shop</p>
+                <input type="submit" value="Shop öffnen" id="r_openShop" class="controll_Service_Button">
+            </div>
         </div>
     </div>
+    
 
     <script>
+
+        async function checkEntrance(service, request) {
+            console.log("Hallo");
+
+            try {
+                const response = await fetch('switchEntranceStatus.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `service=${service}&request=${request}`
+                });
+
+                const data = await response.json();
+
+                if (data && (data.new_stat == 1 || data.status == 1)) {
+                    document.getElementById(`r_open${service}`).value = `${service} schließen`;
+                    document.getElementById(`statusLight${service}_downer`).style.background = 'green';
+                    document.getElementById(`statusLight${service}_downer`).style.animation = 'glow1 1.5s infinite alternate';
+                } else {
+                    document.getElementById(`r_open${service}`).value = `${service} öffnen`;
+                    document.getElementById(`statusLight${service}_downer`).style.background = 'red';
+                    document.getElementById(`statusLight${service}_downer`).style.animation = 'glow2 1.5s infinite alternate';
+                }
+            } catch (error) {
+                console.error('Fehler:', error);
+                alert('Es gab einen Fehler');
+            }
+        }
+
+        // Klick-Event Listener für "Einlass"
+        document.getElementById('r_openEinlass').addEventListener('click', function() {
+            checkEntrance('Einlass', 'switch');
+        });
+
+        // Klick-Event Listener für "Shop"
+        document.getElementById('r_openShop').addEventListener('click', function() {
+            checkEntrance('Shop', 'switch');
+        });
+
+        // Laden der Seite, um die Anfragen beim Laden auszuführen
+        window.addEventListener('load', async function() {
+            await checkEntrance('Einlass', 'get');
+            await checkEntrance('Shop', 'get');
+        });
+
         document.getElementById('r_mail').addEventListener('click', function(){
             window.location.href = 'new-mail/index.php';
         });

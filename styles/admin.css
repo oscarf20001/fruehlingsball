@@ -450,7 +450,7 @@ table .descriptionStatus{
     z-index: 1;
 }
 
-.extraMail{
+.extraMail, .controllUnit{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -460,11 +460,14 @@ table .descriptionStatus{
     z-index: 1;
 }
 
-.extraMail .mail{
+.extraMail{
+    width: 100%;
+}
+
+.extraMail .mail,.controlls{
     display: flex;
-    justify-content: space-around;
     align-items: center;
-    width: 80%;
+    width: 100%;
     margin: 1rem;
 }
 
@@ -476,4 +479,74 @@ table .descriptionStatus{
     height: 1px;
     width: 100%;
     background-color: white;
+}
+
+.st-light_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 33%;
+}
+
+.controll_Service_Description{
+    width: 33%;
+    text-align: center;
+}
+
+.controll_Service_Button{
+    width: 33%;
+}
+
+.st-light{
+    height: 7.5px;
+    width: 7.5px;
+    background: red;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 5px rgba(0, 128, 0, 0.6);
+    animation: glow2 1.5s infinite alternate;
+}
+
+.controllUnit{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.openShop{
+    margin: 0;
+}
+
+.controll_Service_Description_Mail{
+    width: 50%;
+}
+
+#r_mail{
+    width: 49%;
+}
+
+.closingBanner{
+    height: 2rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: red;
+}
+
+@keyframes glow1 {
+    0% {
+        box-shadow: 0 0 10px 5px rgba(0, 128, 0, 0.6);
+      }
+    100% {
+        box-shadow: 0 0 20px 10px rgba(0, 128, 0, 1);
+      }
+}
+
+@keyframes glow2 {
+    0% {
+        box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 20px 10px rgba(255, 0, 0, 1); /* Maximale Helligkeit */
+    }
 }
