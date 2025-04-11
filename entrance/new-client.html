@@ -323,7 +323,7 @@
         // Initialisierung der Klassen
         const uiManager = new UIManager();
         const personManager = new PersonManager(uiManager, zuschlag);
-        const webSocketManager = new WebSocketManager('ws://127.0.0.1:8080', personManager);
+        const webSocketManager = new WebSocketManager('ws://0.0.0.0:8080', personManager);
 //        const webSocketManager = new WebSocketManager('ws://192.168.178.102:8080', personManager);
 
 

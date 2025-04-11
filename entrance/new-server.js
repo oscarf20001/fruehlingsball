@@ -123,5 +123,8 @@ const dbConfig = {
 };
 
 const database = new Database(dbConfig);
-const websocketServer = new WebSocketServer(8080);
+const websocketServer = new WebSocketServer({
+    port: 8080,
+    host: '0.0.0.0'
+});
 const ticketManager = new TicketManager(database, websocketServer);
